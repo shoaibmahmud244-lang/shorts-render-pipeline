@@ -18,7 +18,7 @@ BLACKDETECT_RE = re.compile(
 
 def build_beat_filter(beat: BeatSpec, index: int) -> str:
     """Build deterministic 1080x1920 scale/pad + micro-action filter chain for one beat."""
-    frames = int(round(beat.hold * FPS))
+    frames = round(beat.hold * FPS)
     base = (
         f"[{index}:v]scale={CANVAS_W}:{CANVAS_H}:force_original_aspect_ratio=decrease,"
         f"pad={CANVAS_W}:{CANVAS_H}:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1"
