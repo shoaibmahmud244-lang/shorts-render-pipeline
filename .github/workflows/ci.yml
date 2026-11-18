@@ -1,0 +1,26 @@
+name: CI
+on:
+  push:
+    branches: [main, "chore/**"]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install FFmpeg
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install package & dev tools
+        run: pip install -e ".[dev]"
+      - name: Lint (ruff)
+        run: ruff check src/ tests/
+      - name: Type-check (mypy --strict)
+        run: mypy src/ tests/
+      - name: Unit tests (pytest)
+        run: pytest -v
+      - name: End-to-End 15s Render & Pre-Flight Demo
+        run: python3 -m shorts_engine.cli --demo --out-dir build/demo_15s
